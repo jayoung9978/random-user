@@ -1,1 +1,30 @@
-.claude
+# Claude Code 설정
+.claude/
+
+# Python 바이트코드 (필요시 추가)
+__pycache__/
+*.py[cod]
+*.pyo
+
+# 시스템 파일
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 에디터 설정
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 로그 파일
+*.log
+
+# 임시 파일
+*.tmp
+*.temp
