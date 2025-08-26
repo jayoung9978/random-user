@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>테스트용 유저정보 랜덤 데이터 생성기</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				min-height: 100vh;
+				padding: 20px;
+			}
+
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				background: white;
+				border-radius: 15px;
+				box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+				overflow: hidden;
+			}
+
+			.header {
+				background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+				padding: 30px;
+				text-align: center;
+				color: white;
+			}
+
+			.header h1 {
+				font-size: 2.5rem;
+				margin-bottom: 10px;
+				font-weight: 700;
+			}
+
+			.header p {
+				font-size: 1.1rem;
+				opacity: 0.9;
+			}
+
+			.controls {
+				padding: 30px;
+				background: #f8f9fa;
+				border-bottom: 1px solid #e9ecef;
+			}
+
+			.control-group {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 20px;
+				flex-wrap: wrap;
+			}
+
+			.radio-group {
+				display: flex;
+				align-items: center;
+				gap: 15px;
+				background: white;
+				padding: 8px 15px;
+				border-radius: 8px;
+				border: 2px solid #e9ecef;
+			}
+
+			.radio-group label {
+				display: flex;
+				align-items: center;
+				gap: 5px;
+				cursor: pointer;
+				font-weight: 600;
+				color: #495057;
+			}
+
+			.radio-group input[type="radio"] {
+				margin: 0;
+			}
+
+			.input-group {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.input-group label {
+				font-weight: 600;
+				color: #495057;
+			}
+
+			.input-group input {
+				padding: 10px 15px;
+				border: 2px solid #e9ecef;
+				border-radius: 8px;
+				width: 100px;
+				text-align: center;
+				font-size: 16px;
+				transition: border-color 0.3s;
+			}
+
+			.input-group input:focus {
+				outline: none;
+				border-color: #4facfe;
+			}
+
+			.generate-btn {
+				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+				color: white;
+				border: none;
+				padding: 12px 30px;
+				border-radius: 8px;
+				font-size: 16px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: transform 0.2s, box-shadow 0.2s;
+			}
+
+			.generate-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+			}
+
+			.generate-btn:active {
+				transform: translateY(0);
+			}
+
+			.results {
+				padding: 30px;
+			}
+
+			.tab-container {
+				margin-bottom: 20px;
+			}
+
+			.tabs {
+				display: flex;
+				border-bottom: 2px solid #e9ecef;
+				margin-bottom: 20px;
+			}
+
+			.tab {
+				flex: 1;
+				padding: 15px;
+				text-align: center;
+				background: #f8f9fa;
+				border: none;
+				cursor: pointer;
+				font-size: 16px;
+				font-weight: 600;
+				color: #6c757d;
+				transition: all 0.3s;
+			}
+
+			.tab.active {
+				background: #4facfe;
+				color: white;
+			}
+
+			.tab:hover {
+				background: #e9ecef;
+			}
+
+			.tab.active:hover {
+				background: #4facfe;
+			}
+
+			.output-container {
+				position: relative;
+				min-height: 300px;
+			}
+
+			.output {
+				background: #f8f9fa;
+				border: 1px solid #e9ecef;
+				border-radius: 8px;
+				padding: 20px;
+				min-height: 300px;
+				font-family: "Courier New", monospace;
+				font-size: 14px;
+				line-height: 1.6;
+				white-space: pre-wrap;
+				overflow-wrap: break-word;
+			}
+
+			.copy-btn {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				background: #28a745;
+				color: white;
+				border: none;
+				padding: 8px 15px;
+				border-radius: 6px;
+				cursor: pointer;
+				font-size: 14px;
+				transition: background-color 0.3s;
+			}
+
+			.copy-btn:hover {
+				background: #218838;
+			}
+
+			.copy-btn.copied {
+				background: #17a2b8;
+			}
+
+			.empty-state {
+				text-align: center;
+				color: #6c757d;
+				font-style: italic;
+				margin-top: 50px;
+			}
+
+			.loading {
+				text-align: center;
+				color: #4facfe;
+				font-weight: 600;
+			}
+
+			@media (max-width: 768px) {
+				.header h1 {
+					font-size: 2rem;
+				}
+
+				.control-group {
+					flex-direction: column;
+					align-items: stretch;
+				}
+
+				.tabs {
+					flex-direction: column;
+				}
+
+				.tab {
+					border-bottom: 1px solid #dee2e6;
+				}
+
+				.tab:last-child {
+					border-bottom: none;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h1>🎲 테스트용 유저정보 랜덤 데이터 생성기</h1>
+				<p>이름, 주소, 이메일, 나이를 무작위로 생성합니다</p>
+			</div>
+
+			<div class="controls">
+				<div class="control-group">
+					<div class="radio-group">
+						<span>언어 설정:</span>
+						<label>
+							<input type="radio" name="language" value="korean" checked />
+							한국어
+						</label>
+						<label>
+							<input type="radio" name="language" value="english" />
+							English
+						</label>
+					</div>
+					<div class="input-group">
+						<label for="count">생성 개수:</label>
+						<input type="number" id="count" value="5" min="1" max="100" />
+					</div>
+					<button class="generate-btn" onclick="generateData()">
+						🎯 데이터 생성하기
+					</button>
+				</div>
+			</div>
+
+			<div class="results">
+				<div class="tab-container">
+					<div class="tabs">
+						<button class="tab active" onclick="switchTab('text')">
+							📄 텍스트 형식
+						</button>
+						<button class="tab" onclick="switchTab('json')">
+							📋 JSON 형식
+						</button>
+					</div>
+
+					<div class="output-container">
+						<button class="copy-btn" onclick="copyToClipboard()">
+							📋 복사
+						</button>
+						<div class="output" id="output">
+							<div class="empty-state">
+								위의 "데이터 생성하기" 버튼을 클릭하여 랜덤 데이터를
+								생성해보세요! 🚀
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// 랜덤 데이터 생성 클래스
+			class RandomGenerator {
+				constructor() {
+					// 한국 데이터
+					this.korean = {
+						lastNames: [
+							"김",
+							"이",
+							"박",
+							"최",
+							"정",
+							"강",
+							"조",
+							"윤",
+							"장",
+							"임",
+							"한",
+							"오",
+							"서",
+							"신",
+							"권",
+							"황",
+							"안",
+							"송",
+							"류",
+							"전",
+							"홍",
+							"고",
+							"문",
+							"양",
+							"손",
+							"배",
+							"조",
+							"백",
+							"허",
+							"유",
+							"남",
+							"심",
+							"노",
+							"정",
+							"하",
+							"곽",
+							"성",
+							"차",
+							"주",
+							"우",
+						],
+						firstNames: [
+							"민준",
+							"서준",
+							"예준",
+							"도윤",
+							"시우",
+							"주원",
+							"하준",
+							"지호",
+							"건우",
+							"우진",
+							"지민",
+							"서연",
+							"서윤",
+							"지우",
+							"하윤",
+							"예은",
+							"지유",
+							"윤서",
+							"채원",
+							"시은",
+							"소율",
+							"지아",
+							"예린",
+							"수빈",
+							"다은",
+							"채윤",
+							"하은",
+							"수아",
+							"예나",
+							"유나",
+							"현우",
+							"준서",
+							"민재",
+							"준혁",
+							"지훈",
+							"태윤",
+							"민성",
+							"연우",
+							"정우",
+							"승우",
+						],
+						cities: [
+							"서울특별시",
+							"부산광역시",
+							"대구광역시",
+							"인천광역시",
+							"광주광역시",
+							"대전광역시",
+							"울산광역시",
+							"경기도",
+							"강원도",
+							"충청북도",
+							"충청남도",
+							"전라북도",
+							"전라남도",
+							"경상북도",
+							"경상남도",
+							"제주특별자치도",
+						],
+						districts: [
+							"강남구",
+							"강동구",
+							"강북구",
+							"강서구",
+							"관악구",
+							"광진구",
+							"구로구",
+							"금천구",
+							"노원구",
+							"도봉구",
+							"동대문구",
+							"동작구",
+							"마포구",
+							"서대문구",
+							"서초구",
+							"성동구",
+							"성북구",
+							"송파구",
+							"양천구",
+							"영등포구",
+							"용산구",
+							"은평구",
+							"종로구",
+							"중구",
+							"중랑구",
+							"해운대구",
+							"수영구",
+							"부산진구",
+							"동래구",
+							"남구",
+							"북구",
+							"사하구",
+							"금정구",
+							"수성구",
+							"달서구",
+							"중구",
+							"동구",
+							"서구",
+							"남구",
+							"북구",
+							"연수구",
+							"남동구",
+							"부평구",
+							"계양구",
+							"서구",
+							"미추홀구",
+						],
+						roadNames: [
+							"가로수길",
+							"강남대로",
+							"테헤란로",
+							"올림픽로",
+							"한강대로",
+							"서초대로",
+							"논현로",
+							"압구정로",
+							"삼성로",
+							"역삼로",
+							"언주로",
+							"봉은사로",
+							"세종대로",
+							"종로",
+							"을지로",
+							"퇴계로",
+							"동작대로",
+							"여의대로",
+							"양화로",
+							"홍익로",
+							"연남로",
+							"성산로",
+							"증산로",
+							"공항대로",
+							"해운대해변로",
+							"광안해변로",
+							"동백로",
+							"센텀로",
+							"수영로",
+							"달구벌대로",
+							"중앙대로",
+							"동대구로",
+							"경상대로",
+						],
+						nameMapping: {
+							김: "kim",
+							이: "lee",
+							박: "park",
+							최: "choi",
+							정: "jung",
+							강: "kang",
+							조: "jo",
+							윤: "yoon",
+							장: "jang",
+							임: "lim",
+							한: "han",
+							오: "oh",
+							서: "seo",
+							신: "shin",
+							권: "kwon",
+							황: "hwang",
+							안: "ahn",
+							송: "song",
+							류: "ryu",
+							전: "jeon",
+							홍: "hong",
+							고: "go",
+							문: "moon",
+							양: "yang",
+							손: "son",
+							배: "bae",
+							백: "baek",
+							허: "heo",
+							유: "yu",
+							남: "nam",
+							심: "sim",
+							노: "noh",
+							하: "ha",
+							곽: "kwak",
+							성: "sung",
+							차: "cha",
+							주: "joo",
+							우: "woo",
+						},
+						domains: [
+							"gmail.com",
+							"naver.com",
+							"daum.net",
+							"hanmail.net",
+							"yahoo.co.kr",
+						],
+					};
+
+					// 외국 데이터 (영어권)
+					this.english = {
+						firstNames: [
+							"James",
+							"Robert",
+							"John",
+							"Michael",
+							"David",
+							"William",
+							"Richard",
+							"Joseph",
+							"Thomas",
+							"Christopher",
+							"Daniel",
+							"Paul",
+							"Mark",
+							"Donald",
+							"Steven",
+							"Kenneth",
+							"Andrew",
+							"Joshua",
+							"Kevin",
+							"Brian",
+							"Mary",
+							"Patricia",
+							"Jennifer",
+							"Linda",
+							"Elizabeth",
+							"Barbara",
+							"Susan",
+							"Jessica",
+							"Sarah",
+							"Karen",
+							"Lisa",
+							"Nancy",
+							"Betty",
+							"Helen",
+							"Sandra",
+							"Donna",
+							"Carol",
+							"Ruth",
+							"Sharon",
+							"Michelle",
+						],
+						lastNames: [
+							"Smith",
+							"Johnson",
+							"Williams",
+							"Brown",
+							"Jones",
+							"Garcia",
+							"Miller",
+							"Davis",
+							"Rodriguez",
+							"Martinez",
+							"Hernandez",
+							"Lopez",
+							"Gonzalez",
+							"Wilson",
+							"Anderson",
+							"Thomas",
+							"Taylor",
+							"Moore",
+							"Jackson",
+							"Martin",
+							"Lee",
+							"Perez",
+							"Thompson",
+							"White",
+							"Harris",
+							"Sanchez",
+							"Clark",
+							"Ramirez",
+							"Lewis",
+							"Robinson",
+						],
+						states: [
+							"California",
+							"Texas",
+							"Florida",
+							"New York",
+							"Pennsylvania",
+							"Illinois",
+							"Ohio",
+							"Georgia",
+							"North Carolina",
+							"Michigan",
+							"New Jersey",
+							"Virginia",
+							"Washington",
+							"Arizona",
+							"Massachusetts",
+							"Tennessee",
+							"Indiana",
+							"Missouri",
+							"Maryland",
+							"Wisconsin",
+						],
+						cities: [
+							"New York",
+							"Los Angeles",
+							"Chicago",
+							"Houston",
+							"Phoenix",
+							"Philadelphia",
+							"San Antonio",
+							"San Diego",
+							"Dallas",
+							"San Jose",
+							"Austin",
+							"Jacksonville",
+							"Fort Worth",
+							"Columbus",
+							"Charlotte",
+							"San Francisco",
+							"Indianapolis",
+							"Seattle",
+							"Denver",
+							"Washington",
+							"Boston",
+							"El Paso",
+							"Nashville",
+							"Detroit",
+							"Oklahoma City",
+						],
+						streets: [
+							"Main St",
+							"Oak St",
+							"First St",
+							"Second St",
+							"Park Ave",
+							"Maple Ave",
+							"Cedar St",
+							"Elm St",
+							"Washington St",
+							"Lake St",
+							"Hill St",
+							"Third St",
+							"Fourth St",
+							"Fifth St",
+							"Sixth St",
+							"Broadway",
+							"Lincoln Ave",
+							"Madison Ave",
+							"Jackson St",
+							"Church St",
+						],
+						domains: [
+							"gmail.com",
+							"yahoo.com",
+							"hotmail.com",
+							"outlook.com",
+							"aol.com",
+						],
+					};
+				}
+
+				randomChoice(array) {
+					return array[Math.floor(Math.random() * array.length)];
+				}
+
+				randomInt(min, max) {
+					return Math.floor(Math.random() * (max - min + 1)) + min;
+				}
+
+				generateName(language) {
+					if (language === "korean") {
+						const lastName = this.randomChoice(this.korean.lastNames);
+						const firstName = this.randomChoice(this.korean.firstNames);
+						return lastName + firstName;
+					} else {
+						const firstName = this.randomChoice(this.english.firstNames);
+						const lastName = this.randomChoice(this.english.lastNames);
+						return `${firstName} ${lastName}`;
+					}
+				}
+
+				generateAddress(language) {
+					if (language === "korean") {
+						const city = this.randomChoice(this.korean.cities);
+						const district = this.randomChoice(this.korean.districts);
+						const road = this.randomChoice(this.korean.roadNames);
+						const buildingNum = this.randomInt(1, 999);
+						return `${city} ${district} ${road} ${buildingNum}`;
+					} else {
+						const streetNum = this.randomInt(100, 9999);
+						const street = this.randomChoice(this.english.streets);
+						const city = this.randomChoice(this.english.cities);
+						const state = this.randomChoice(this.english.states);
+						const zipCode = this.randomInt(10000, 99999);
+						return `${streetNum} ${street}, ${city}, ${state} ${zipCode}`;
+					}
+				}
+
+				generateEmail(name, language) {
+					if (language === "korean") {
+						const lastChar = name[0];
+						const engLast = this.korean.nameMapping[lastChar] || "user";
+						const randomNum = this.randomInt(100, 9999);
+						const domain = this.randomChoice(this.korean.domains);
+						return `${engLast}${randomNum}@${domain}`;
+					} else {
+						const nameParts = name.toLowerCase().split(" ");
+						const username = nameParts.join("") + this.randomInt(100, 9999);
+						const domain = this.randomChoice(this.english.domains);
+						return `${username}@${domain}`;
+					}
+				}
+
+				generateAllData(language = "korean") {
+					const name = this.generateName(language);
+					const email = this.generateEmail(name, language);
+					const address = this.generateAddress(language);
+					const age = this.randomInt(18, 65);
+
+					if (language === "korean") {
+						return {
+							이름: name,
+							이메일: email,
+							주소: address,
+							나이: age,
+						};
+					} else {
+						return {
+							name: name,
+							email: email,
+							address: address,
+							age: age,
+						};
+					}
+				}
+			}
+
+			// 전역 변수
+			let generator = new RandomGenerator();
+			let currentTab = "text";
+			let lastGeneratedData = [];
+
+			// 탭 전환
+			function switchTab(tab) {
+				currentTab = tab;
+
+				// 탭 활성화 상태 변경
+				document
+					.querySelectorAll(".tab")
+					.forEach((t) => t.classList.remove("active"));
+				event.target.classList.add("active");
+
+				// 데이터가 있으면 다시 표시
+				if (lastGeneratedData.length > 0) {
+					displayData(lastGeneratedData);
+				}
+			}
+
+			// 데이터 생성
+			function generateData() {
+				const count = parseInt(document.getElementById("count").value) || 5;
+				const language = document.querySelector(
+					'input[name="language"]:checked'
+				).value;
+				const output = document.getElementById("output");
+
+				// 로딩 표시
+				output.innerHTML = '<div class="loading">🔄 데이터 생성 중...</div>';
+
+				// 약간의 지연을 주어 로딩 효과
+				setTimeout(() => {
+					const data = [];
+					for (let i = 0; i < count; i++) {
+						data.push(generator.generateAllData(language));
+					}
+
+					lastGeneratedData = data;
+					displayData(data);
+				}, 300);
+			}
+
+			// 데이터 표시
+			function displayData(data) {
+				const output = document.getElementById("output");
+
+				if (currentTab === "text") {
+					let textOutput = `=== 생성된 랜덤 데이터 (${data.length}개) ===\n\n`;
+
+					data.forEach((item, index) => {
+						textOutput += `[${index + 1}번째 데이터]\n`;
+						Object.entries(item).forEach(([key, value]) => {
+							textOutput += `${key}: ${value}\n`;
+						});
+						textOutput += "\n" + "=".repeat(50) + "\n\n";
+					});
+
+					output.textContent = textOutput;
+				} else {
+					const jsonOutput = JSON.stringify(data, null, 2);
+					output.textContent = jsonOutput;
+				}
+			}
+
+			// 클립보드에 복사
+			function copyToClipboard() {
+				const output = document.getElementById("output");
+				const copyBtn = document.querySelector(".copy-btn");
+
+				if (output.textContent.trim()) {
+					navigator.clipboard
+						.writeText(output.textContent)
+						.then(() => {
+							copyBtn.textContent = "✅ 복사됨!";
+							copyBtn.classList.add("copied");
+
+							setTimeout(() => {
+								copyBtn.textContent = "📋 복사";
+								copyBtn.classList.remove("copied");
+							}, 2000);
+						})
+						.catch(() => {
+							// 클립보드 API를 지원하지 않는 경우 대안
+							const textArea = document.createElement("textarea");
+							textArea.value = output.textContent;
+							document.body.appendChild(textArea);
+							textArea.select();
+							document.execCommand("copy");
+							document.body.removeChild(textArea);
+
+							copyBtn.textContent = "✅ 복사됨!";
+							copyBtn.classList.add("copied");
+
+							setTimeout(() => {
+								copyBtn.textContent = "📋 복사";
+								copyBtn.classList.remove("copied");
+							}, 2000);
+						});
+				}
+			}
+
+			// 엔터키로 생성
+			document
+				.getElementById("count")
+				.addEventListener("keypress", function (event) {
+					if (event.key === "Enter") {
+						generateData();
+					}
+				});
+
+			// 페이지 로드 시 초기 데이터 생성
+			window.addEventListener("load", function () {
+				setTimeout(() => {
+					generateData();
+				}, 500);
+			});
+		</script>
+	</body>
+</html>
