@@ -53,6 +53,22 @@
 
 			.control-group {
 				display: flex;
+				flex-direction: column;
+				gap: 20px;
+			}
+
+			.settings-group {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 15px;
+				padding: 20px;
+				background: white;
+				border-radius: 10px;
+				border: 2px solid #e9ecef;
+			}
+
+			.action-group {
+				display: flex;
 				align-items: center;
 				justify-content: center;
 				gap: 20px;
@@ -62,11 +78,17 @@
 			.radio-group {
 				display: flex;
 				align-items: center;
-				gap: 15px;
-				background: white;
-				padding: 8px 15px;
+				gap: 10px;
+				padding: 10px;
+				background: #f8f9fa;
 				border-radius: 8px;
-				border: 2px solid #e9ecef;
+				border: 1px solid #e9ecef;
+			}
+
+			.radio-group span {
+				font-weight: 600;
+				color: #495057;
+				min-width: 70px;
 			}
 
 			.radio-group label {
@@ -74,12 +96,86 @@
 				align-items: center;
 				gap: 5px;
 				cursor: pointer;
-				font-weight: 600;
-				color: #495057;
+				font-weight: 500;
+				color: #6c757d;
 			}
 
 			.radio-group input[type="radio"] {
 				margin: 0;
+			}
+
+			.radio-group.disabled {
+				opacity: 0.5;
+				pointer-events: none;
+			}
+
+			.save-btn {
+				background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+				color: white;
+				border: none;
+				padding: 12px 25px;
+				border-radius: 8px;
+				font-size: 14px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: transform 0.2s, box-shadow 0.2s;
+			}
+
+			.save-btn:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 6px 15px rgba(40, 167, 69, 0.4);
+			}
+
+			.save-btn:active {
+				transform: translateY(0);
+			}
+
+			.preview-section {
+				background: #e8f4fd;
+				border: 2px dashed #4facfe;
+				border-radius: 10px;
+				padding: 15px;
+				margin: 15px 0;
+			}
+
+			.preview-title {
+				font-weight: 700;
+				color: #2c3e50;
+				margin-bottom: 10px;
+				font-size: 14px;
+			}
+
+			.preview-content {
+				background: white;
+				border-radius: 8px;
+				padding: 12px;
+				font-family: "Courier New", monospace;
+			}
+
+			.preview-item {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin-bottom: 5px;
+			}
+
+			.preview-item:last-child {
+				margin-bottom: 0;
+			}
+
+			.preview-label {
+				font-weight: 600;
+				color: #495057;
+				min-width: 80px;
+			}
+
+			.preview-value {
+				color: #2c5aa0;
+				font-weight: 500;
+				background: #f8f9fa;
+				padding: 4px 8px;
+				border-radius: 4px;
+				border-left: 3px solid #4facfe;
 			}
 
 			.input-group {
@@ -255,47 +351,100 @@
 
 			<div class="controls">
 				<div class="control-group">
-					<div class="radio-group">
-						<span>언어 설정:</span>
-						<label>
-							<input type="radio" name="language" value="korean" checked />
-							한국어
-						</label>
-						<label>
-							<input type="radio" name="language" value="english" />
-							English
-						</label>
+					<div class="settings-group">
+						<div class="radio-group">
+							<span>언어:</span>
+							<label>
+								<input type="radio" name="language" value="korean" checked />
+								한국
+							</label>
+							<label>
+								<input type="radio" name="language" value="english" />
+								영어
+							</label>
+						</div>
+
+						<div class="radio-group" id="columnLanguageGroup">
+							<span>컬럼언어:</span>
+							<label>
+								<input
+									type="radio"
+									name="columnLanguage"
+									value="korean"
+									checked
+								/>
+								한국어
+							</label>
+							<label>
+								<input type="radio" name="columnLanguage" value="english" />
+								English
+							</label>
+						</div>
+
+						<div class="radio-group" id="displayLanguageGroup">
+							<span>표시언어:</span>
+							<label>
+								<input
+									type="radio"
+									name="displayLanguage"
+									value="korean"
+									checked
+								/>
+								한국어
+							</label>
+							<label>
+								<input type="radio" name="displayLanguage" value="english" />
+								English
+							</label>
+						</div>
+
+						<div class="radio-group">
+							<span>데이터형식:</span>
+							<label>
+								<input type="radio" name="dataFormat" value="json" checked />
+								JSON
+							</label>
+							<label>
+								<input type="radio" name="dataFormat" value="text" />
+								텍스트
+							</label>
+						</div>
 					</div>
-					<div class="input-group">
-						<label for="count">생성 개수:</label>
-						<input type="number" id="count" value="5" min="1" max="100" />
+
+					<div class="preview-section">
+						<div class="preview-title">📋 설정 미리보기</div>
+						<div class="preview-content" id="settingsPreview">
+							<div class="preview-item">
+								<span class="preview-label">생성 예시:</span>
+								<span class="preview-value" id="previewExample"
+									>이름: 김민준</span
+								>
+							</div>
+						</div>
 					</div>
-					<button class="generate-btn" onclick="generateData()">
-						🎯 데이터 생성하기
-					</button>
+
+					<div class="action-group">
+						<button class="save-btn" onclick="saveSettings()">
+							💾 설정 저장
+						</button>
+						<div class="input-group">
+							<label for="count">생성 개수:</label>
+							<input type="number" id="count" value="5" min="1" max="100" />
+						</div>
+						<button class="generate-btn" onclick="generateData()">
+							🎯 데이터 생성하기
+						</button>
+					</div>
 				</div>
 			</div>
 
 			<div class="results">
-				<div class="tab-container">
-					<div class="tabs">
-						<button class="tab active" onclick="switchTab('text')">
-							📄 텍스트 형식
-						</button>
-						<button class="tab" onclick="switchTab('json')">
-							📋 JSON 형식
-						</button>
-					</div>
-
-					<div class="output-container">
-						<button class="copy-btn" onclick="copyToClipboard()">
-							📋 복사
-						</button>
-						<div class="output" id="output">
-							<div class="empty-state">
-								위의 "데이터 생성하기" 버튼을 클릭하여 랜덤 데이터를
-								생성해보세요! 🚀
-							</div>
+				<div class="output-container">
+					<button class="copy-btn" onclick="copyToClipboard()">📋 복사</button>
+					<div class="output" id="output">
+						<div class="empty-state">
+							위의 "데이터 생성하기" 버튼을 클릭하여 랜덤 데이터를 생성해보세요!
+							🚀
 						</div>
 					</div>
 				</div>
@@ -542,6 +691,46 @@
 						],
 					};
 
+					// 한국-영어 이름 매핑
+					this.koreanToEnglishNames = {
+						민준: "Minjun", 서준: "Seojun", 예준: "Yejun", 도윤: "Doyun", 시우: "Siwoo",
+						주원: "Juwon", 하준: "Hajun", 지호: "Jiho", 건우: "Gunwoo", 우진: "Woojin",
+						지민: "Jimin", 서연: "Seoyeon", 서윤: "Seoyoon", 지우: "Jiwoo", 하윤: "Hayoon",
+						예은: "Yeeun", 지유: "Jiyu", 윤서: "Yoonseo", 채원: "Chaewon", 시은: "Sieun",
+						소율: "Soyul", 지아: "Jia", 예린: "Yerin", 수빈: "Subin", 다은: "Daeun",
+						채윤: "Chaeyoon", 하은: "Haeun", 수아: "Sua", 예나: "Yena", 유나: "Yuna",
+						현우: "Hyunwoo", 준서: "Joonseo", 민재: "Minjae", 준혁: "Joonhyuk", 지훈: "Jihoon",
+						태윤: "Taeyoon", 민성: "Minseong", 연우: "Yeonwoo", 정우: "Jungwoo", 승우: "Seungwoo"
+					};
+
+					// 한국-영어 주소 매핑
+					this.addressMapping = {
+						서울특별시: "Seoul", 부산광역시: "Busan", 대구광역시: "Daegu", 인천광역시: "Incheon",
+						광주광역시: "Gwangju", 대전광역시: "Daejeon", 울산광역시: "Ulsan", 경기도: "Gyeonggi-do",
+						강원도: "Gangwon-do", 충청북도: "Chungcheongbuk-do", 충청남도: "Chungcheongnam-do",
+						전라북도: "Jeollabuk-do", 전라남도: "Jeollanam-do", 경상북도: "Gyeongsangbuk-do",
+						경상남도: "Gyeongsangnam-do", 제주특별자치도: "Jeju",
+						강남구: "Gangnam-gu", 강동구: "Gangdong-gu", 강북구: "Gangbuk-gu", 강서구: "Gangseo-gu",
+						관악구: "Gwanak-gu", 광진구: "Gwangjin-gu", 구로구: "Guro-gu", 금천구: "Geumcheon-gu",
+						노원구: "Nowon-gu", 도봉구: "Dobong-gu", 동대문구: "Dongdaemun-gu", 동작구: "Dongjak-gu",
+						마포구: "Mapo-gu", 서대문구: "Seodaemun-gu", 서초구: "Seocho-gu", 성동구: "Seongdong-gu",
+						성북구: "Seongbuk-gu", 송파구: "Songpa-gu", 양천구: "Yangcheon-gu", 영등포구: "Yeongdeungpo-gu",
+						용산구: "Yongsan-gu", 은평구: "Eunpyeong-gu", 종로구: "Jongno-gu", 중구: "Jung-gu",
+						중랑구: "Jungnang-gu", 해운대구: "Haeundae-gu", 수영구: "Suyeong-gu", 부산진구: "Busanjin-gu",
+						동래구: "Dongnae-gu", 남구: "Nam-gu", 북구: "Buk-gu", 사하구: "Saha-gu", 금정구: "Geumjeong-gu",
+						수성구: "Suseong-gu", 달서구: "Dalseo-gu", 동구: "Dong-gu", 서구: "Seo-gu",
+						연수구: "Yeonsu-gu", 남동구: "Namdong-gu", 부평구: "Bupyeong-gu", 계양구: "Gyeyang-gu", 미추홀구: "Michuhol-gu",
+						가로수길: "Garosu-gil", 강남대로: "Gangnam-daero", 테헤란로: "Teheran-ro", 올림픽로: "Olympic-ro",
+						한강대로: "Hangang-daero", 서초대로: "Seocho-daero", 논현로: "Nonhyeon-ro", 압구정로: "Apgujeong-ro",
+						삼성로: "Samsung-ro", 역삼로: "Yeoksam-ro", 언주로: "Eonju-ro", 봉은사로: "Bongeunsa-ro",
+						세종대로: "Sejong-daero", 종로: "Jongno", 을지로: "Eulji-ro", 퇴계로: "Toegye-ro",
+						동작대로: "Dongjak-daero", 여의대로: "Yeoui-daero", 양화로: "Yanghwa-ro", 홍익로: "Hongik-ro",
+						연남로: "Yeonnam-ro", 성산로: "Seongsan-ro", 증산로: "Jeungsan-ro", 공항대로: "Gonghang-daero",
+						해운대해변로: "Haeundae Beach-ro", 광안해변로: "Gwangan Beach-ro", 동백로: "Dongbaek-ro",
+						센텀로: "Centum-ro", 수영로: "Suyeong-ro", 수성로: "Suseong-ro", 달구벌대로: "Dalgubeol-daero",
+						중앙대로: "Jungang-daero", 동대구로: "Dongdaegu-ro", 경상대로: "Gyeongsang-daero"
+					};
+
 					// 외국 데이터 (영어권)
 					this.english = {
 						firstNames: [
@@ -751,79 +940,308 @@
 					}
 				}
 
-				generateAllData(language = "korean") {
+				generateAllData(
+					language = "korean",
+					columnLanguage = "korean",
+					displayLanguage = "korean"
+				) {
 					const name = this.generateName(language);
 					const email = this.generateEmail(name, language);
 					const address = this.generateAddress(language);
 					const age = this.randomInt(18, 65);
 
-					if (language === "korean") {
-						return {
-							이름: name,
-							이메일: email,
-							주소: address,
-							나이: age,
+					// 컬럼명 결정
+					let columns;
+					if (columnLanguage === "korean") {
+						columns = {
+							name: "이름",
+							email: "이메일",
+							address: "주소",
+							age: "나이",
 						};
 					} else {
-						return {
-							name: name,
-							email: email,
-							address: address,
-							age: age,
+						columns = {
+							name: "name",
+							email: "email",
+							address: "address",
+							age: "age",
 						};
 					}
+
+					// 데이터 값 처리 (표시언어에 따라)
+					let displayName = name;
+					let displayAddress = address;
+
+					if (displayLanguage === "english" && language === "korean") {
+						// 한국 이름을 완전히 영어식으로 변환
+						const lastName = name[0];
+						const firstName = name.slice(1);
+						const engLast = this.korean.nameMapping[lastName] || "kim";
+
+						const engFirst = this.koreanToEnglishNames[firstName] || firstName;
+						displayName = `${engFirst} ${
+							engLast.charAt(0).toUpperCase() + engLast.slice(1)
+						}`;
+
+						// 주소를 완전히 영어식으로 변환
+						let engAddress = address;
+						Object.entries(this.addressMapping).forEach(([kr, en]) => {
+							engAddress = engAddress.replace(new RegExp(kr, "g"), en);
+						});
+
+						displayAddress = engAddress;
+					}
+
+					return {
+						[columns.name]: displayName,
+						[columns.email]: email,
+						[columns.address]: displayAddress,
+						[columns.age]: age,
+					};
 				}
 			}
 
 			// 전역 변수
 			let generator = new RandomGenerator();
-			let currentTab = "text";
 			let lastGeneratedData = [];
+			let generateDataTimeout = null;
 
-			// 탭 전환
-			function switchTab(tab) {
-				currentTab = tab;
+			// 상수 정의
+			const SAMPLE_DATA = {
+				koreanName: "김민준",
+				englishName: "James Smith", 
+				koreanEmail: "kim1234@naver.com",
+				englishEmail: "jamessmith1234@gmail.com",
+				koreanAddress: "서울특별시 강남구 테헤란로 123"
+			};
 
-				// 탭 활성화 상태 변경
-				document
-					.querySelectorAll(".tab")
-					.forEach((t) => t.classList.remove("active"));
-				event.target.classList.add("active");
+			// 유틸리티 함수: 현재 폼 설정 가져오기
+			function getCurrentSettings() {
+				try {
+					const count = parseInt(document.getElementById("count").value) || 5;
+					
+					// 입력 값 검증
+					if (count < 1 || count > 100) {
+						console.warn("Count value out of range, using default: 5");
+						document.getElementById("count").value = 5;
+					}
 
-				// 데이터가 있으면 다시 표시
-				if (lastGeneratedData.length > 0) {
-					displayData(lastGeneratedData);
+					return {
+						language: document.querySelector('input[name="language"]:checked')?.value || 'korean',
+						columnLanguage: document.querySelector('input[name="columnLanguage"]:checked')?.value || 'korean',
+						displayLanguage: document.querySelector('input[name="displayLanguage"]:checked')?.value || 'korean',
+						dataFormat: document.querySelector('input[name="dataFormat"]:checked')?.value || 'json',
+						count: Math.min(Math.max(count, 1), 100)
+					};
+				} catch (error) {
+					console.error("Error getting settings:", error);
+					return {
+						language: 'korean',
+						columnLanguage: 'korean', 
+						displayLanguage: 'korean',
+						dataFormat: 'json',
+						count: 5
+					};
 				}
+			}
+
+			// 설정 저장
+			function saveSettings() {
+				try {
+					const settings = getCurrentSettings();
+					localStorage.setItem(
+						"randomGeneratorSettings",
+						JSON.stringify(settings)
+					);
+
+					// 저장 완료 피드백
+					const saveBtn = document.querySelector(".save-btn");
+					if (saveBtn) {
+						const originalText = saveBtn.textContent;
+						saveBtn.textContent = "✅ 저장완료!";
+						saveBtn.style.background =
+							"linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%)";
+
+						setTimeout(() => {
+							saveBtn.textContent = originalText;
+							saveBtn.style.background =
+								"linear-gradient(135deg, #28a745 0%, #20c997 100%)";
+						}, 2000);
+					}
+				} catch (error) {
+					console.error("Error saving settings:", error);
+					const saveBtn = document.querySelector(".save-btn");
+					if (saveBtn) {
+						saveBtn.textContent = "❌ 저장 실패";
+						setTimeout(() => {
+							saveBtn.textContent = "💾 설정 저장";
+						}, 2000);
+					}
+				}
+			}
+
+			// 설정 로드
+			function loadSettings() {
+				try {
+					const saved = localStorage.getItem("randomGeneratorSettings");
+					if (saved) {
+						const settings = JSON.parse(saved);
+
+						// 안전하게 설정 복원
+						const languageEl = document.querySelector(`input[name="language"][value="${settings.language}"]`);
+						const columnLanguageEl = document.querySelector(`input[name="columnLanguage"][value="${settings.columnLanguage}"]`);
+						const displayLanguageEl = document.querySelector(`input[name="displayLanguage"][value="${settings.displayLanguage}"]`);
+						const dataFormatEl = document.querySelector(`input[name="dataFormat"][value="${settings.dataFormat}"]`);
+						const countEl = document.getElementById("count");
+
+						if (languageEl) languageEl.checked = true;
+						if (columnLanguageEl) columnLanguageEl.checked = true;
+						if (displayLanguageEl) displayLanguageEl.checked = true;
+						if (dataFormatEl) dataFormatEl.checked = true;
+						if (countEl) countEl.value = settings.count || 5;
+					}
+				} catch (error) {
+					console.error("Error loading settings:", error);
+					// 기본값 사용
+				}
+
+				// 초기 설정
+				updateLanguageSettings();
+
+				// 이벤트 위임을 사용한 효율적인 이벤트 처리
+				const settingsContainer = document.querySelector('.settings-group');
+				if (settingsContainer) {
+					settingsContainer.addEventListener('change', (event) => {
+						if (event.target.type === 'radio') {
+							// 언어 설정 변경시 특별 처리
+							if (event.target.name === 'language') {
+								updateLanguageSettings();
+							}
+							// 모든 라디오 버튼 변경시 미리보기 업데이트
+							updatePreview();
+						}
+					});
+				}
+			}
+
+			// 언어 설정에 따른 다른 설정들 활성화/비활성화
+			function updateLanguageSettings() {
+				const { language: selectedLanguage } = getCurrentSettings();
+				const columnGroup = document.getElementById("columnLanguageGroup");
+				const displayGroup = document.getElementById("displayLanguageGroup");
+
+				if (selectedLanguage === "english") {
+					// 영어 선택시 다른 언어 설정 비활성화
+					columnGroup.classList.add("disabled");
+					displayGroup.classList.add("disabled");
+
+					// 영어 선택시 자동으로 English로 설정
+					document.querySelector(
+						'input[name="columnLanguage"][value="english"]'
+					).checked = true;
+					document.querySelector(
+						'input[name="displayLanguage"][value="english"]'
+					).checked = true;
+				} else {
+					// 한국 선택시 다른 언어 설정 활성화
+					columnGroup.classList.remove("disabled");
+					displayGroup.classList.remove("disabled");
+				}
+
+				// 미리보기 업데이트
+				updatePreview();
+			}
+
+			// 설정 미리보기 업데이트
+			function updatePreview() {
+				const { language, columnLanguage, displayLanguage, dataFormat } = getCurrentSettings();
+
+				let example = "";
+
+				if (language === "korean") {
+					// 한국 데이터 기준
+					let displayName = SAMPLE_DATA.koreanName;
+					let displayEmail = SAMPLE_DATA.koreanEmail;
+					let displayAddress = SAMPLE_DATA.koreanAddress;
+
+					if (displayLanguage === "english") {
+						displayName = "Soyul Kim"; // 한국이름을 영어식으로 (실제와 맞춤)
+						displayAddress = "Seoul Gangnam-gu Teheran-ro 123"; // 실제 한국 주소 영어표기법 사용
+					}
+
+					if (columnLanguage === "korean") {
+						if (dataFormat === "text") {
+							example = `이름: ${displayName}`;
+						} else {
+							example = `{"이름": "${displayName}", "이메일": "${displayEmail}"}`;
+						}
+					} else {
+						if (dataFormat === "text") {
+							example = `name: ${displayName}`;
+						} else {
+							example = `{"name": "${displayName}", "email": "${displayEmail}"}`;
+						}
+					}
+				} else {
+					// 영어 데이터 기준
+					if (dataFormat === "text") {
+						example = `name: ${SAMPLE_DATA.englishName}`;
+					} else {
+						example = `{"name": "${SAMPLE_DATA.englishName}", "email": "${SAMPLE_DATA.englishEmail}"}`;
+					}
+				}
+
+				document.getElementById("previewExample").textContent = example;
 			}
 
 			// 데이터 생성
 			function generateData() {
-				const count = parseInt(document.getElementById("count").value) || 5;
-				const language = document.querySelector(
-					'input[name="language"]:checked'
-				).value;
+				// 이전 타이머가 있으면 취소
+				if (generateDataTimeout) {
+					clearTimeout(generateDataTimeout);
+				}
+
+				const { language, columnLanguage, displayLanguage, dataFormat, count } = getCurrentSettings();
 				const output = document.getElementById("output");
+
+				if (!output) {
+					console.error("Output element not found");
+					return;
+				}
 
 				// 로딩 표시
 				output.innerHTML = '<div class="loading">🔄 데이터 생성 중...</div>';
 
 				// 약간의 지연을 주어 로딩 효과
-				setTimeout(() => {
+				generateDataTimeout = setTimeout(() => {
 					const data = [];
 					for (let i = 0; i < count; i++) {
-						data.push(generator.generateAllData(language));
+						data.push(
+							generator.generateAllData(
+								language,
+								columnLanguage,
+								displayLanguage
+							)
+						);
 					}
 
-					lastGeneratedData = data;
-					displayData(data);
+					lastGeneratedData = {
+						data,
+						format: dataFormat,
+						columnLanguage,
+						displayLanguage,
+					};
+					displayData(lastGeneratedData);
+					generateDataTimeout = null; // 타이머 참조 정리
 				}, 300);
 			}
 
 			// 데이터 표시
-			function displayData(data) {
+			function displayData(dataObj) {
 				const output = document.getElementById("output");
+				const { data, format } = dataObj;
 
-				if (currentTab === "text") {
+				if (format === "text") {
 					let textOutput = `=== 생성된 랜덤 데이터 (${data.length}개) ===\n\n`;
 
 					data.forEach((item, index) => {
@@ -843,38 +1261,85 @@
 
 			// 클립보드에 복사
 			function copyToClipboard() {
-				const output = document.getElementById("output");
-				const copyBtn = document.querySelector(".copy-btn");
+				try {
+					const output = document.getElementById("output");
+					const copyBtn = document.querySelector(".copy-btn");
 
-				if (output.textContent.trim()) {
-					navigator.clipboard
-						.writeText(output.textContent)
-						.then(() => {
-							copyBtn.textContent = "✅ 복사됨!";
-							copyBtn.classList.add("copied");
+					if (!output || !copyBtn) {
+						console.error("Required elements not found");
+						return;
+					}
 
+					const textContent = output.textContent?.trim();
+					if (!textContent) {
+						console.warn("No content to copy");
+						return;
+					}
+
+					// 복사 성공 피드백 함수
+					const showSuccess = () => {
+						copyBtn.textContent = "✅ 복사됨!";
+						copyBtn.classList.add("copied");
+						setTimeout(() => {
+							copyBtn.textContent = "📋 복사";
+							copyBtn.classList.remove("copied");
+						}, 2000);
+					};
+
+					// 클립보드 API 사용 시도
+					if (navigator.clipboard) {
+						navigator.clipboard
+							.writeText(textContent)
+							.then(showSuccess)
+							.catch((error) => {
+								console.warn("Clipboard API failed, trying fallback:", error);
+								// 대체 방법 시도
+								try {
+									const textArea = document.createElement("textarea");
+									textArea.value = textContent;
+									textArea.style.position = 'fixed';
+									textArea.style.opacity = '0';
+									document.body.appendChild(textArea);
+									textArea.select();
+									const success = document.execCommand("copy");
+									document.body.removeChild(textArea);
+									
+									if (success) {
+										showSuccess();
+									} else {
+										throw new Error("execCommand failed");
+									}
+								} catch (fallbackError) {
+									console.error("All copy methods failed:", fallbackError);
+									copyBtn.textContent = "❌ 복사 실패";
+									setTimeout(() => {
+										copyBtn.textContent = "📋 복사";
+									}, 2000);
+								}
+							});
+					} else {
+						// 클립보드 API가 없는 경우 대체 방법 사용
+						console.warn("Clipboard API not supported, using fallback");
+						const textArea = document.createElement("textarea");
+						textArea.value = textContent;
+						textArea.style.position = 'fixed';
+						textArea.style.opacity = '0';
+						document.body.appendChild(textArea);
+						textArea.select();
+						const success = document.execCommand("copy");
+						document.body.removeChild(textArea);
+						
+						if (success) {
+							showSuccess();
+						} else {
+							copyBtn.textContent = "❌ 복사 실패";
 							setTimeout(() => {
 								copyBtn.textContent = "📋 복사";
-								copyBtn.classList.remove("copied");
 							}, 2000);
-						})
-						.catch(() => {
-							// 클립보드 API를 지원하지 않는 경우 대안
-							const textArea = document.createElement("textarea");
-							textArea.value = output.textContent;
-							document.body.appendChild(textArea);
-							textArea.select();
-							document.execCommand("copy");
-							document.body.removeChild(textArea);
-
-							copyBtn.textContent = "✅ 복사됨!";
-							copyBtn.classList.add("copied");
-
-							setTimeout(() => {
-								copyBtn.textContent = "📋 복사";
-								copyBtn.classList.remove("copied");
-							}, 2000);
-						});
+						}
+					}
+				} catch (error) {
+					console.error("Unexpected error in copyToClipboard:", error);
 				}
 			}
 
@@ -887,8 +1352,9 @@
 					}
 				});
 
-			// 페이지 로드 시 초기 데이터 생성
+			// 페이지 로드 시 초기화
 			window.addEventListener("load", function () {
+				loadSettings();
 				setTimeout(() => {
 					generateData();
 				}, 500);

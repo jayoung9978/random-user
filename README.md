@@ -1,6 +1,6 @@
 # 테스트용 유저정보 랜덤 데이터 생성기
 
-한국/외국 유저정보(이름, 주소, 이메일, 나이)를 랜덤으로 생성하는 웹/Python 프로그램입니다.
+한국/외국 유저정보(이름, 주소, 이메일, 나이)를 랜덤으로 생성하는 웹 프로그램입니다.
 
 ## 기능
 
@@ -13,41 +13,13 @@
 
 ## 사용법
 
-### 1. 웹 버전 (권장)
 1. `index.html` 파일을 브라우저에서 열기
 2. 언어 설정 선택 (한국어/English)
-3. 생성할 데이터 개수 입력
-4. "데이터 생성하기" 버튼 클릭
-5. 텍스트/JSON 형식 선택 후 복사
-
-### 2. Python 버전
-```bash
-python3 random_generator.py
-```
-
-**메뉴 선택:**
-- `1`: 이름만 생성
-- `2`: 주소만 생성
-- `3`: 이메일만 생성
-- `4`: 전체 데이터 생성
-- `5`: 여러 개 데이터 일괄 생성
-- `0`: 프로그램 종료
-
-### 3. Python 클래스 직접 사용
-```python
-from random_generator import RandomGenerator
-
-generator = RandomGenerator()
-
-# 개별 생성 (한국어만 지원)
-name = generator.generate_korean_name()
-address = generator.generate_korean_address()
-email = generator.generate_email(name)
-
-# 전체 데이터 생성
-all_data = generator.generate_all_data()
-print(all_data)
-```
+3. 컬럼언어와 표시언어 설정
+4. 데이터 형식 선택 (JSON/텍스트)
+5. 생성할 데이터 개수 입력 (1-100개)
+6. "데이터 생성하기" 버튼 클릭
+7. 생성된 데이터를 복사 버튼으로 클립보드에 복사
 
 ## 예시 출력
 
@@ -76,9 +48,7 @@ print(all_data)
 
 ```
 랜덤생성기/
-├── index.html            # 웹 인터페이스 (권장)
-├── random_generator.py   # Python 프로그램 
-├── test_generator.py     # Python 테스트 파일
+├── index.html            # 웹 인터페이스
 └── README.md            # 사용 설명서
 ```
 
@@ -100,6 +70,8 @@ print(all_data)
 - ✅ **테스트 전용**: 실제 개인정보와 무관한 가상 데이터
 - ✅ **다국어 지원**: 한국/미국 유저정보 형식
 - ✅ **웹 기반**: 브라우저에서 바로 사용 가능
+- ✅ **설정 저장**: 사용자 설정을 로컬 스토리지에 자동 저장
+- ✅ **실시간 미리보기**: 설정에 따른 데이터 예시를 실시간으로 확인
 - ✅ **복사 기능**: 원클릭으로 클립보드에 복사
 - ✅ **다양한 형식**: 텍스트/JSON 출력 지원
 
