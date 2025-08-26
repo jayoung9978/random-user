@@ -409,6 +409,22 @@
 								텍스트
 							</label>
 						</div>
+
+						<div class="radio-group" id="addressLevelGroup">
+							<span>주소레벨:</span>
+							<label>
+								<input type="radio" name="addressLevel" value="simple" />
+								간단
+							</label>
+							<label>
+								<input type="radio" name="addressLevel" value="medium" checked />
+								중간
+							</label>
+							<label>
+								<input type="radio" name="addressLevel" value="detailed" />
+								상세
+							</label>
+						</div>
 					</div>
 
 					<div class="preview-section">
@@ -908,20 +924,40 @@
 					}
 				}
 
-				generateAddress(language) {
+				generateAddress(language, addressLevel = 'medium') {
 					if (language === "korean") {
 						const city = this.randomChoice(this.korean.cities);
-						const district = this.randomChoice(this.korean.districts);
-						const road = this.randomChoice(this.korean.roadNames);
-						const buildingNum = this.randomInt(1, 999);
-						return `${city} ${district} ${road} ${buildingNum}`;
+						
+						switch (addressLevel) {
+							case 'simple':
+								return city;
+							case 'medium':
+								const district = this.randomChoice(this.korean.districts);
+								return `${city} ${district}`;
+							case 'detailed':
+							default:
+								const district2 = this.randomChoice(this.korean.districts);
+								const road = this.randomChoice(this.korean.roadNames);
+								const buildingNum = this.randomInt(1, 999);
+								return `${city} ${district2} ${road} ${buildingNum}`;
+						}
 					} else {
-						const streetNum = this.randomInt(100, 9999);
-						const street = this.randomChoice(this.english.streets);
 						const city = this.randomChoice(this.english.cities);
-						const state = this.randomChoice(this.english.states);
-						const zipCode = this.randomInt(10000, 99999);
-						return `${streetNum} ${street}, ${city}, ${state} ${zipCode}`;
+						
+						switch (addressLevel) {
+							case 'simple':
+								return city;
+							case 'medium':
+								const state = this.randomChoice(this.english.states);
+								return `${city}, ${state}`;
+							case 'detailed':
+							default:
+								const streetNum = this.randomInt(100, 9999);
+								const street = this.randomChoice(this.english.streets);
+								const state2 = this.randomChoice(this.english.states);
+								const zipCode = this.randomInt(10000, 99999);
+								return `${streetNum} ${street}, ${city}, ${state2} ${zipCode}`;
+						}
 					}
 				}
 
@@ -943,11 +979,12 @@
 				generateAllData(
 					language = "korean",
 					columnLanguage = "korean",
-					displayLanguage = "korean"
+					displayLanguage = "korean",
+					addressLevel = "medium"
 				) {
 					const name = this.generateName(language);
 					const email = this.generateEmail(name, language);
-					const address = this.generateAddress(language);
+					const address = this.generateAddress(language, addressLevel);
 					const age = this.randomInt(18, 65);
 
 					// 컬럼명 결정
@@ -1012,7 +1049,16 @@
 				englishName: "James Smith", 
 				koreanEmail: "kim1234@naver.com",
 				englishEmail: "jamessmith1234@gmail.com",
-				koreanAddress: "서울특별시 강남구 테헤란로 123"
+				koreanAddress: {
+					simple: "서울특별시",
+					medium: "서울특별시 강남구",
+					detailed: "서울특별시 강남구 테헤란로 123"
+				},
+				englishAddress: {
+					simple: "New York",
+					medium: "New York, California", 
+					detailed: "1234 Main St, New York, California 90210"
+				}
 			};
 
 			// 유틸리티 함수: 현재 폼 설정 가져오기
@@ -1031,6 +1077,7 @@
 						columnLanguage: document.querySelector('input[name="columnLanguage"]:checked')?.value || 'korean',
 						displayLanguage: document.querySelector('input[name="displayLanguage"]:checked')?.value || 'korean',
 						dataFormat: document.querySelector('input[name="dataFormat"]:checked')?.value || 'json',
+						addressLevel: document.querySelector('input[name="addressLevel"]:checked')?.value || 'medium',
 						count: Math.min(Math.max(count, 1), 100)
 					};
 				} catch (error) {
@@ -1040,6 +1087,7 @@
 						columnLanguage: 'korean', 
 						displayLanguage: 'korean',
 						dataFormat: 'json',
+						addressLevel: 'medium',
 						count: 5
 					};
 				}
@@ -1092,12 +1140,14 @@
 						const columnLanguageEl = document.querySelector(`input[name="columnLanguage"][value="${settings.columnLanguage}"]`);
 						const displayLanguageEl = document.querySelector(`input[name="displayLanguage"][value="${settings.displayLanguage}"]`);
 						const dataFormatEl = document.querySelector(`input[name="dataFormat"][value="${settings.dataFormat}"]`);
+						const addressLevelEl = document.querySelector(`input[name="addressLevel"][value="${settings.addressLevel || 'medium'}"]`);
 						const countEl = document.getElementById("count");
 
 						if (languageEl) languageEl.checked = true;
 						if (columnLanguageEl) columnLanguageEl.checked = true;
 						if (displayLanguageEl) displayLanguageEl.checked = true;
 						if (dataFormatEl) dataFormatEl.checked = true;
+						if (addressLevelEl) addressLevelEl.checked = true;
 						if (countEl) countEl.value = settings.count || 5;
 					}
 				} catch (error) {
@@ -1129,11 +1179,13 @@
 				const { language: selectedLanguage } = getCurrentSettings();
 				const columnGroup = document.getElementById("columnLanguageGroup");
 				const displayGroup = document.getElementById("displayLanguageGroup");
+				const addressLevelGroup = document.getElementById("addressLevelGroup");
 
 				if (selectedLanguage === "english") {
 					// 영어 선택시 다른 언어 설정 비활성화
 					columnGroup.classList.add("disabled");
 					displayGroup.classList.add("disabled");
+					addressLevelGroup.classList.add("disabled");
 
 					// 영어 선택시 자동으로 English로 설정
 					document.querySelector(
@@ -1146,6 +1198,7 @@
 					// 한국 선택시 다른 언어 설정 활성화
 					columnGroup.classList.remove("disabled");
 					displayGroup.classList.remove("disabled");
+					addressLevelGroup.classList.remove("disabled");
 				}
 
 				// 미리보기 업데이트
@@ -1154,7 +1207,7 @@
 
 			// 설정 미리보기 업데이트
 			function updatePreview() {
-				const { language, columnLanguage, displayLanguage, dataFormat } = getCurrentSettings();
+				const { language, columnLanguage, displayLanguage, dataFormat, addressLevel } = getCurrentSettings();
 
 				let example = "";
 
@@ -1162,11 +1215,23 @@
 					// 한국 데이터 기준
 					let displayName = SAMPLE_DATA.koreanName;
 					let displayEmail = SAMPLE_DATA.koreanEmail;
-					let displayAddress = SAMPLE_DATA.koreanAddress;
+					let displayAddress = SAMPLE_DATA.koreanAddress[addressLevel];
 
 					if (displayLanguage === "english") {
 						displayName = "Soyul Kim"; // 한국이름을 영어식으로 (실제와 맞춤)
-						displayAddress = "Seoul Gangnam-gu Teheran-ro 123"; // 실제 한국 주소 영어표기법 사용
+						// 주소 레벨에 따른 영어 변환
+						switch (addressLevel) {
+							case 'simple':
+								displayAddress = "Seoul";
+								break;
+							case 'medium':
+								displayAddress = "Seoul Gangnam-gu";
+								break;
+							case 'detailed':
+							default:
+								displayAddress = "Seoul Gangnam-gu Teheran-ro 123";
+								break;
+						}
 					}
 
 					if (columnLanguage === "korean") {
@@ -1184,10 +1249,11 @@
 					}
 				} else {
 					// 영어 데이터 기준
+					const englishAddress = SAMPLE_DATA.englishAddress[addressLevel];
 					if (dataFormat === "text") {
 						example = `name: ${SAMPLE_DATA.englishName}`;
 					} else {
-						example = `{"name": "${SAMPLE_DATA.englishName}", "email": "${SAMPLE_DATA.englishEmail}"}`;
+						example = `{"name": "${SAMPLE_DATA.englishName}", "email": "${SAMPLE_DATA.englishEmail}", "address": "${englishAddress}"}`;
 					}
 				}
 
@@ -1201,7 +1267,7 @@
 					clearTimeout(generateDataTimeout);
 				}
 
-				const { language, columnLanguage, displayLanguage, dataFormat, count } = getCurrentSettings();
+				const { language, columnLanguage, displayLanguage, dataFormat, addressLevel, count } = getCurrentSettings();
 				const output = document.getElementById("output");
 
 				if (!output) {
@@ -1220,7 +1286,8 @@
 							generator.generateAllData(
 								language,
 								columnLanguage,
-								displayLanguage
+								displayLanguage,
+								addressLevel
 							)
 						);
 					}
