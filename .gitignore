@@ -28,3 +28,6 @@ Thumbs.db
 # 임시 파일
 *.tmp
 *.temp
+
+# 설정 파일
+setup.js
